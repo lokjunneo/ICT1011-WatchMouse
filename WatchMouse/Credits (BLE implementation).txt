@@ -1,0 +1,62 @@
+Credits Explanations (please read:)
+
+This documents lists down the parts of example projects we had copied from, 
+as well as projects we took reference/learned from (not copy).
+
+. We only copied basic variable definitions and simple functions
+So the copied parts only make up a small part of our projects.
+
+. As for the listed reference projects, we did not copy them, but rather learned from these projects to make our own.
+
+  Hence, certain parts of the code may appear similar to part of the reference projects.
+  (Such as structure of program flow)
+
+--------------------------------------------------------------------
+
+We copied only parts from the following projects:
+
+1. https://learn.tinycircuits.com/Kits/TinyScreen-Smart-Watch-Kit_Tutorial/
+From the IOS Example
+
+We copied only 2 simple functions and 1 object structure.
+ . BLEConnection object structure from the BLETypes.h of the example.
+ . initSecurity() and requestSecurity() functions from BlueNRG.io .
+
+2. https://os.mbed.com/users/bowenfeng/code/BLE_HID/
+
+We only copied the object structures/ variable definitions from this example, to use for setting up BLE characteristics
+They are mostly in 
+HIDServiceBase.h and MouseService.h
+
+----------------------------------------------------------------------
+
+Next, We took reference to the following projects. 
+We did not copy them, but rather learned from these projects to make our own.
+
+Hence, certain parts of the code may appear similar to part of the projects.
+(Such as structure of program flow)
+
+
+-----------------------------------------------------------------------
+
+We took reference/learn from the following: (Not Copy, just reference)
+
+1. https://learn.tinycircuits.com/Kits/TinyScreen-Smart-Watch-Kit_Tutorial/
+Used as reference to set up structure of initialising BLE connection and pairing, as well as some BLE event handling
+
+2. https://os.mbed.com/users/bowenfeng/code/BLE_HID/
+Used as reference to understand BLE services and characteristics
+
+3. https://github.com/TinyCircuits/TinyCircuits-TinyShield-BLE-ASD2116/tree/master/examples/STBLE/examples/UARTPassThrough
+From UART.ino
+Used as reference to learn how to properly store UUID, as well as some BLE event handling
+
+4. https://github.com/PixlRainbow/TinyCircuits-TinyShield-BLE-ASD2116/tree/a4f926d72a8e6264ea06030a27de2e3c9c63afe9/examples/STBLE/examples/BLEKeyboard
+
+A public fork of (3), with a keyboard HID service/char setup code.
+Used as a reference to setup mouse services/characteristics.
+(4) most likely also references (2) as well
+
+
+Library used: STBLE.h, ...
+
