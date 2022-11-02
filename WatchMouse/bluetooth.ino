@@ -90,7 +90,7 @@ uint8_t init_HID_service() {
   const report_o_reference_t reportODesc  = { 0x01, INPUT_REPORT};
 
   //const mouse_report_reference_t mediaInputDesc  = { 0x02,INPUT_REPORT};// INPUT_REPORT};//, INPUT_REPORT };
-  const report_o_reference_t mediaReportODesc  = { 0x02, INPUT_REPORT};
+  const report_o_reference_t mediaReportODesc  = { 0x02, FEATURE_REPORT};
   
   const static HID_information_t info = { HID_VERSION_1_11, 0x00, 0x03 };
   const ProtocolMode mode = REPORT_PROTOCOL;
@@ -124,7 +124,7 @@ uint8_t init_HID_service() {
 
   COPY_BOOT_MOUSE_INPUT_REPORT_UUID(uuid16);
   //BOOT MOUSE INPUT REPORT
-  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(boot_mouse_report), (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, 
+  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(media_report), (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, 
                            GATT_NOTIFY_ATTRIBUTE_WRITE,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDBMIRCharHandle);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
@@ -378,7 +378,7 @@ void update_mouse(uint8_t input_report[]){
 
 void update_media(uint8_t input_report[]){
   
-  uint8_t uuid16[2], ret;
+  uint8_t ret;
   uint8_t updated_report[] = {0,0,0,0,0,0,0,0};
   
   updated_report[0] = input_report[0];
@@ -392,6 +392,8 @@ void update_media(uint8_t input_report[]){
   
   //Media REPORT O
   ret = aci_gatt_update_char_value(HIDServHandle, HIDMediaReportOCharHandle,0,sizeof(media_report),&updated_report);
+  //ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(media_report),&updated_report);
+
 
   if (ret != BLE_STATUS_SUCCESS) {
     SerialMonitorInterface.println("Failed to update Media Report O characteristics");
