@@ -8,6 +8,7 @@ ble_connection_state = true means it is connected
 */
 
 //Call this in setup()
+
 void BLE_Setup(){
 
   BLE_Init("WatchMouse");
