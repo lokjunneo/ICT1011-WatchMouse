@@ -353,6 +353,6 @@ void update_mouse(uint8_t input_report[]){
   if (ret != BLE_STATUS_SUCCESS) {
     SerialMonitorInterface.println("Failed to update Report characteristics");
   };
-  //SerialMonitorInterface.println("Mouse update process: complete");
+  SerialMonitorInterface.println("Mouse update process: complete");
 }
 
