@@ -7,7 +7,8 @@
 BLEConnection * primaryConn = NULL;
 
 //We store the service handle for human interface device here, and HID Control Point Characteristic Handle
-uint16_t HIDServHandle, HIDCPCharHandle, HIDRPCharHandle, HIDBMIRCharHandle, HIDBMIRDescCharHandle, HIDInfCharHandle, HIDProtocolCharHandle, HIDReportCharHandle, HIDReportDescCharHandle;
+uint16_t HIDServHandle, HIDCPCharHandle, HIDRPCharHandle, HIDBMIRCharHandle, HIDBMIRDescCharHandle, HIDInfCharHandle, HIDProtocolCharHandle, 
+        HIDReportCharHandle, HIDReportDescCharHandle;
 
 //const long BLE_timer;
 
@@ -110,16 +111,16 @@ uint8_t init_HID_service() {
   
   COPY_REPORT_MAP_UUID(uuid16);
   //MOUSE REPORT MAP..20?
-  ret =  aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(MOUSE_REPORT_MAP), CHAR_PROP_READ, ATTR_PERMISSION_NONE, GATT_DONT_NOTIFY_EVENTS,
+  ret =  aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(REPORT_MAP), CHAR_PROP_READ, ATTR_PERMISSION_NONE, GATT_DONT_NOTIFY_EVENTS,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDRPCharHandle);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
   
-  ret = aci_gatt_update_char_value(HIDServHandle, HIDRPCharHandle, 0, sizeof(MOUSE_REPORT_MAP), MOUSE_REPORT_MAP);
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDRPCharHandle, 0, sizeof(REPORT_MAP), REPORT_MAP);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
 
   COPY_BOOT_MOUSE_INPUT_REPORT_UUID(uuid16);
   //BOOT MOUSE INPUT REPORT
-  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(report), (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, 
+  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(boot_mouse_report), (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, 
                            GATT_NOTIFY_ATTRIBUTE_WRITE,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDBMIRCharHandle);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
@@ -165,7 +166,7 @@ uint8_t init_HID_service() {
   SerialMonitorInterface.println("HID success!.\n");
   //REPORT O
   COPY_REPORT_CHAR_UUID(uuid16);
-  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(report),
+  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(boot_mouse_report),
                            (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, GATT_NOTIFY_ATTRIBUTE_WRITE,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDReportCharHandle);
   
@@ -340,7 +341,7 @@ void update_mouse(uint8_t input_report[]){
 
   COPY_BOOT_MOUSE_INPUT_REPORT_UUID(uuid16);
   //BOOT MOUSE INPUT REPORT
-  ret = aci_gatt_update_char_value(HIDServHandle, HIDBMIRCharHandle,0,sizeof(report),&updated_report);
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDBMIRCharHandle,0,sizeof(boot_mouse_report),&updated_report);
 
   if (ret != BLE_STATUS_SUCCESS) {
     SerialMonitorInterface.println("Failed to update Boot Mouse Input Report");
@@ -348,11 +349,34 @@ void update_mouse(uint8_t input_report[]){
                            
   COPY_REPORT_CHAR_UUID(uuid16);
   //REPORT O
-  ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(report),&updated_report);
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(boot_mouse_report),&updated_report);
 
   if (ret != BLE_STATUS_SUCCESS) {
     SerialMonitorInterface.println("Failed to update Report characteristics");
   };
   SerialMonitorInterface.println("Mouse update process: complete");
+}
+
+void update_media(uint8_t input_report[]){
+  /*
+  uint8_t uuid16[2], ret;
+  uint8_t updated_report[] = {0,0,0,0,0,0,0,0};
+  
+  updated_report[0] = input_report[0];
+  updated_report[1] = input_report[1];
+  updated_report[2] = input_report[2];
+  updated_report[3] = input_report[3];
+  updated_report[4] = input_report[4];
+  updated_report[5] = input_report[5];
+  updated_report[6] = input_report[6];
+  updated_report[7] = input_report[7];
+  
+  //Media REPORT O
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDMediaReportOCharHandle,0,sizeof(media_report),&updated_report);
+
+  if (ret != BLE_STATUS_SUCCESS) {
+    SerialMonitorInterface.println("Failed to update Media Report O characteristics");
+  };
+  SerialMonitorInterface.println("Media update process: complete");*/
 }
 

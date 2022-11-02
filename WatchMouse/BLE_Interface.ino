@@ -11,13 +11,13 @@ ble_connection_state = true means it is connected
 
 long ble_millis = 0; //to store millis(), so we only call it once a loop
 
-const uint8_t ble_total_page = 1;
+const uint8_t ble_total_page = 2;
 uint8_t ble_curr_page_number = 0;
 uint8_t ble_update_delay = 30;
 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
-uint8_t (*ble_updater[ble_total_page])() = {ble_mouse_updater};
-uint8_t (*ble_controller[ble_total_page])() = {ble_mouse_ud_move};
+uint8_t (*ble_updater[ble_total_page])() = {ble_mouse_updater, ble_media_updater};
+uint8_t (*ble_controller[ble_total_page])() = {ble_mouse_ud_move, ble_media_vol};
 
 void BLE_Setup(){
 
@@ -43,10 +43,6 @@ void BLE_Loop(){
 }
 //To do: add left and right click
 
-/**
- * Switch statement that determines which function will be called
- * Unfortunately, we cannot use pointer to functions, because calling these functions via a pointer causes unrelated variables to be affected
- */
 
 void bleCheckButton(){
   //ble_mouse_ud_move();
@@ -70,6 +66,11 @@ void bleUpdater(){
   if ( *ble_updater[ble_curr_page_number] ) {(*ble_updater[ble_curr_page_number])();}
 }
 
+/*
+  Mouse related functions
+*/
+
+//Detect button presses
 uint8_t ble_mouse_ud_move(){
   if (display.getButtons(TSButtonUpperLeft)){
     updateMouseXY(0,1);
@@ -79,7 +80,7 @@ uint8_t ble_mouse_ud_move(){
   }
 
 }
-//use this to set how much 
+
 uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
   int8_t currX = (int8_t)curr_mouse_report[1];
   int8_t newX = offsetX + currX;
@@ -132,3 +133,50 @@ uint8_t mouse_report_changed(){
   }
   return (curr_mouse_total || old_mouse_total);
 } 
+
+/*
+  Media Related functions
+*/
+
+//handles updating of ble characteristic: media
+uint8_t ble_media_updater(){
+  if (media_report_changed()){
+    update_media(curr_media_report);
+    BLE_Timer = millis();
+    reset_media_report();
+  }
+}
+
+//detect button presses
+uint8_t ble_media_vol(){
+  if (display.getButtons(TSButtonUpperLeft)){
+    curr_media_report[6] = 1;
+  }
+  else if (display.getButtons(TSButtonUpperRight)){
+    curr_media_report[5] = 1;
+  }
+}
+
+uint8_t media_report_changed(){
+  uint8_t curr_media_total = 0;
+  uint8_t old_media_total = 0;
+  uint8_t ret = 0;
+  for (int i = 0; i < 8; i++){  
+    curr_media_total += curr_media_report[i];
+    old_media_total += old_media_report[i];
+    if (curr_media_total){
+      ret = 1;
+      break;
+    }
+  }
+  return (curr_media_total || old_media_total);
+} 
+
+uint8_t reset_media_report(){
+  for (int i = 0; i<sizeof(curr_media_report); i++){
+    old_media_report[i] = curr_media_report[i];
+    curr_media_report[i] = 0;
+  }
+}
+
+

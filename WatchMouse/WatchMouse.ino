@@ -12,16 +12,16 @@ TinyScreen display = TinyScreen(TinyScreenDefault);
 
 /*
 Bluetooth stuff.
-Set mouse_mode to 0 to disable mouse control
-Set mouse_mode to 1 to enable mouse control
-Must remember to turn it back on somehow if you on it
-If you are not sure, just turn it off
 */
 BLEConnection bleconn;
 uint8_t ble_connection_state = false;
 
 uint8_t curr_mouse_report[] = {0,0,0,0};
 uint8_t old_mouse_report[] = {0,0,0,0};
+
+uint8_t curr_media_report[] = {0,0,0,0,0,0,0,0};
+uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
+
 
 long BLE_Timer = 0;
 

@@ -83,7 +83,7 @@ typedef struct _BLEConnection {
   report[3] == speed[2]
  */
 
-/* The below are object structures copied from parts of
+/* The below are object structures referenced from parts of
 https://os.mbed.com/users/bowenfeng/code/BLE_HID/
 They are mostly in 
 HIDServiceBase.h and MouseService.h
@@ -93,10 +93,11 @@ Reference materials: https://eleccelerator.com/tutorial-about-usb-hid-report-des
 These contains the sizes of the parameters we need
 */
 
-typedef const uint8_t mouse_report_map_t[];
+typedef const uint8_t custom_report_map_t[];
 typedef const uint8_t * report_t;
 
-uint8_t report[] = { 0,0,0,0};
+uint8_t boot_mouse_report[] = { 0,0,0,0};
+uint8_t media_report[] = {0,0,0,0,0,0,0,0};
 
 typedef struct {
     uint32_t length;
@@ -134,12 +135,13 @@ typedef struct {
 Report maps
 */
 
-mouse_report_map_t MOUSE_REPORT_MAP = {
+custom_report_map_t REPORT_MAP = {
     USAGE_PAGE(1),      0x01,         // Generic Desktop
     USAGE(1),           0x02,         // Mouse
     COLLECTION(1),      0x01,         // Application
     USAGE(1),           0x01,         //  Pointer
     COLLECTION(1),      0x00,         //  Physical
+    //REPORT_ID(1),       0x01,          //   REPORT_ID 
     USAGE_PAGE(1),      0x09,         //   Buttons
     USAGE_MINIMUM(1),   0x01,
     USAGE_MAXIMUM(1),   0x03,
@@ -162,6 +164,29 @@ mouse_report_map_t MOUSE_REPORT_MAP = {
     INPUT(1),           0x06,         //   Data, Variable, Relative
     END_COLLECTION(0),
     END_COLLECTION(0),
+/*
+    USAGE_PAGE(1),      0x0C,          // USAGE_PAGE (Consumer)
+    USAGE(1),           0x01,          // USAGE (Consumer Control)
+    COLLECTION(1),      0x01,          // COLLECTION (Application)
+  //  REPORT_ID(1),       0x02,          //   REPORT_ID (3), media keys id
+    USAGE_PAGE(1),      0x07,          //   USAGE_PAGE (Kbrd/Keypad)
+    USAGE_MINIMUM(1),   0xE0,          //   USAGE_MINIMUM (0xE0)
+    USAGE_MAXIMUM(1),   0xE7,          //   USAGE_MAXIMUM (0xE7)
+    LOGICAL_MINIMUM(1), 0x00,          //   LOGICAL_MINIMUM (0)
+    LOGICAL_MAXIMUM(1), 0x01,          //   Logical Maximum (1)
+    REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
+    REPORT_COUNT(1),    0x08,          //   REPORT_COUNT (8)
+    USAGE(1),           0xB5,          //   USAGE (Scan Next Track)     ; bit 0: 1
+    USAGE(1),           0xB6,          //   USAGE (Scan Previous Track) ; bit 1: 2
+    USAGE(1),           0xB7,          //   USAGE (Stop)                ; bit 2: 4
+    USAGE(1),           0xCD,          //   USAGE (Play/Pause)          ; bit 3: 8
+    USAGE(1),           0xE2,          //   USAGE (Mute)                ; bit 4: 16
+    USAGE(1),           0xE9,          //   USAGE (Volume Increment)    ; bit 5: 32
+    USAGE(1),           0xEA,          //   USAGE (Volume Decrement)    ; bit 6: 64
+    USAGE(2),           0x23, 0x02,    //   Usage (WWW Home)            ; bit 7: 128
+    INPUT(1),           0x02,          //   INPUT (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
+    END_COLLECTION(0)                  // END_COLLECTION
+    */
 };
 
 typedef const uint8_t keyboard_report_map_t[];
@@ -239,7 +264,7 @@ static const uint8_t _hidReportDescriptor[] = {
 };
 
 /*
-mouse_report_map_t KEYBOARD_REPORT_MAP = {
+custom_report_map_t KEYBOARD_REPORT_MAP = {
     USAGE_PAGE(1), 0x01, // Generic Desktop Ctrls
     USAGE(1), 0x06,      // Keyboard
     COLLECTION(1), 0x01, // Application
