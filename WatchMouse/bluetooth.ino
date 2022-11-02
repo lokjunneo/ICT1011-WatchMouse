@@ -86,8 +86,12 @@ uint8_t BLE_Conn_Setup( BLEConnection* conn,void (*connect)(), void (*disconnect
 uint8_t init_HID_service() {
   tBleStatus ret;
 
-  const mouse_report_reference_t mouseInputDesc  = { INPUT_REPORT};// INPUT_REPORT};//, INPUT_REPORT };
-  const report_o_reference_t reportODesc  = { 0x00, INPUT_REPORT};
+  const mouse_report_reference_t mouseInputDesc  = { 0x01,INPUT_REPORT};// INPUT_REPORT};//, INPUT_REPORT };
+  const report_o_reference_t reportODesc  = { 0x01, INPUT_REPORT};
+
+  const mouse_report_reference_t mediaInputDesc  = { 0x02,INPUT_REPORT};// INPUT_REPORT};//, INPUT_REPORT };
+  const report_o_reference_t mediaReportODesc  = { 0x02, INPUT_REPORT};
+  
   const static HID_information_t info = { HID_VERSION_1_11, 0x00, 0x03 };
   const ProtocolMode mode = REPORT_PROTOCOL;
   //const report_t report = {0x00, INPUT_REPORT};
@@ -128,9 +132,7 @@ uint8_t init_HID_service() {
   COPY_REPORT_REFERENCE_UUID(uuid16);
 
   ret = aci_gatt_add_char_desc(HIDServHandle, HIDBMIRCharHandle, UUID_TYPE_16, uuid16,
-                              sizeof(mouse_report_reference_t
-                          ), sizeof(mouse_report_reference_t
-                          ), &mouseInputDesc,
+                              sizeof(mouse_report_reference_t), sizeof(mouse_report_reference_t), &mouseInputDesc,
                               ATTR_PERMISSION_NONE, ATTR_ACCESS_READ_ONLY, GATT_NOTIFY_ATTRIBUTE_WRITE,
                               10, CHAR_VALUE_LEN_CONSTANT, &HIDBMIRDescCharHandle);
 
@@ -182,6 +184,10 @@ uint8_t init_HID_service() {
                               10, CHAR_VALUE_LEN_CONSTANT, &HIDReportDescCharHandle);
 
   SerialMonitorInterface.println("Added char desc.\n"); 
+
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
+
+ 
 
   if (ret != BLE_STATUS_SUCCESS) goto fail;
 

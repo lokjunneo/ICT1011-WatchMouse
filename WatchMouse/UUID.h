@@ -117,7 +117,7 @@ enum ProtocolMode {
 
 typedef struct {
     uint8_t ID;
-    //uint8_t type; //apparently, cannot have this
+    uint8_t type; //apparently, cannot have this
 } mouse_report_reference_t;
 
 typedef struct {
@@ -141,7 +141,7 @@ custom_report_map_t REPORT_MAP = {
     COLLECTION(1),      0x01,         // Application
     USAGE(1),           0x01,         //  Pointer
     COLLECTION(1),      0x00,         //  Physical
-    //REPORT_ID(1),       0x01,          //   REPORT_ID 
+    REPORT_ID(1),       0x01,          //   REPORT_ID 
     USAGE_PAGE(1),      0x09,         //   Buttons
     USAGE_MINIMUM(1),   0x01,
     USAGE_MAXIMUM(1),   0x03,
@@ -164,11 +164,11 @@ custom_report_map_t REPORT_MAP = {
     INPUT(1),           0x06,         //   Data, Variable, Relative
     END_COLLECTION(0),
     END_COLLECTION(0),
-/*
+
     USAGE_PAGE(1),      0x0C,          // USAGE_PAGE (Consumer)
     USAGE(1),           0x01,          // USAGE (Consumer Control)
     COLLECTION(1),      0x01,          // COLLECTION (Application)
-  //  REPORT_ID(1),       0x02,          //   REPORT_ID (3), media keys id
+    REPORT_ID(1),       0x02,          //   REPORT_ID (3), media keys id
     USAGE_PAGE(1),      0x07,          //   USAGE_PAGE (Kbrd/Keypad)
     USAGE_MINIMUM(1),   0xE0,          //   USAGE_MINIMUM (0xE0)
     USAGE_MAXIMUM(1),   0xE7,          //   USAGE_MAXIMUM (0xE7)
@@ -186,7 +186,7 @@ custom_report_map_t REPORT_MAP = {
     USAGE(2),           0x23, 0x02,    //   Usage (WWW Home)            ; bit 7: 128
     INPUT(1),           0x02,          //   INPUT (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     END_COLLECTION(0)                  // END_COLLECTION
-    */
+    
 };
 
 typedef const uint8_t keyboard_report_map_t[];
