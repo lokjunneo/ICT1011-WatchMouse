@@ -12,7 +12,7 @@ ble_connection_state = true means it is connected
 long ble_millis = 0; //to store millis(), so we only call it once a loop
 
 const uint8_t ble_total_page = 2;
-uint8_t ble_curr_page_number = 0;
+uint8_t ble_curr_page_number = 1;
 uint8_t ble_update_delay = 30;
 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
@@ -150,7 +150,8 @@ uint8_t ble_media_updater(){
 //detect button presses
 uint8_t ble_media_vol(){
   if (display.getButtons(TSButtonUpperLeft)){
-    curr_media_report[6] = 1;
+    curr_media_report[6] = 1;//curr_media_report[0] = 1;curr_media_report[1] = 1;curr_media_report[2] = 1;
+    //curr_media_report[3] = 1;curr_media_report[4] = 1;curr_media_report[5] = 0;curr_media_report[7] = 1;
   }
   else if (display.getButtons(TSButtonUpperRight)){
     curr_media_report[5] = 1;
@@ -169,6 +170,8 @@ uint8_t media_report_changed(){
       break;
     }
   }
+  if (curr_media_total){
+  SerialMonitorInterface.println(curr_media_total);}
   return (curr_media_total || old_media_total);
 } 
 
