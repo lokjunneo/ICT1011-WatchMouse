@@ -1,9 +1,6 @@
-long accel_millis = 0;
+
 int tempx = 0,tempy = 0;
  void accelerometer_mouse(){
-  long curr_millis = millis();
-  if (accel_millis > curr_millis) {accel_millis = 0;} //in case of overflow
-  if (curr_millis - accel_millis > 10){
     accel_sensor.read();//This function gets new data from the acccelerometer
 
     // Get the acceleration values from the sensor and store them into global variables
@@ -20,68 +17,33 @@ int tempx = 0,tempy = 0;
     }
     
     else { // if we have correct sensor readings: 
-              int stay = 0;
-              int multiple=1;
+              int multiple=10;
               int tempx,tempy;
-      if(x<-156){
+      if(x<-56){
       tempx = -5*multiple;
-      }
-      else if(x<-56){
-        tempx=-3*multiple;
       }
       else if(x>=-56&&x<=56){
         tempx=0;
       }
       else if(x>56){
-        tempx= 3*multiple;
-      }
-      else if(x>156){
         tempx = 5*multiple;
       }
 
 
 
-      if(y<-156){
+      if(y<-56){
         tempy=-5*multiple;
-      }
-      else if(y<-56){
-        tempy=-3*multiple;
       }
       else if(y>=-56&&y<=56){
         tempy=0;
       }
       else if(y>56){
-        tempy=3*multiple;
-      }
-      else if(y>156){
         tempy=5*multiple;
       }
-      updateMouseXY(tempy,tempx);
-      accel_millis = millis();
+      updateMouseXY(tempy*-1,tempx);
     }
     // The BMA250 can only poll new sensor values every 64ms, so this delay
     // will ensure that we can continue to read values
   }
   // ***Without the delay, there would not be any sensor output*** 
-}
-/*
-uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
-  
-  int8_t currX = (int8_t)curr_mouse_report[2];
-  int8_t currY = (int8_t)curr_mouse_report[1];
 
-  int8_t newX = offsetX + currX;
-  int8_t newY = offsetY*-1 + currY;
-  //overflow: -ve + -ve give positive
-  if (offsetX < 0 && currX < 0 && newX > 0){ newX = -128;}
-  //overflow: +ve + +ve give negative
-  else if (offsetX > 0 && currX > 0 && newX < 0) {newX = 127;}
-
-  if (offsetY < 0 && currY < 0 && newY > 0){ newY = -128;}
-  else if (offsetY > 0 && currY > 0 && newY < 0) {newY = 127;}
-
-  curr_mouse_report[2] = newX;
-  curr_mouse_report[1] = newY;
-
-  //ble_call_update = 40;
-}*/
