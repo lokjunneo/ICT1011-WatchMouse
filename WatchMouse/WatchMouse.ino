@@ -59,6 +59,7 @@ void setup() {
 void loop() {
   
   BLE_Loop();
+  
   Accelerometer();
 }
 
@@ -83,4 +84,3 @@ void HID_onBond(){
 /*
 End of bluetooth stuff
 */
-

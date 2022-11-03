@@ -1,4 +1,4 @@
-void Accelerometer(){
+ void Accelerometer(){
   accel_sensor.read();//This function gets new data from the acccelerometer
 
   // Get the acceleration values from the sensor and store them into global variables
