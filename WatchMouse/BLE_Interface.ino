@@ -157,10 +157,10 @@ uint8_t ble_media_updater(){
 //detect button presses
 uint8_t ble_media_vol(){
   if (display.getButtons(TSButtonUpperLeft)){
-    curr_media_report[5] = 5;
+    curr_media_report[5] = 1;
   }
   else if (display.getButtons(TSButtonUpperRight)){
-    curr_media_report[6] = 6;
+    curr_media_report[6] = 1;
   }
 }
 

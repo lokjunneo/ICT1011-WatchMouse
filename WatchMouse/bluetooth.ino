@@ -90,7 +90,7 @@ uint8_t init_HID_service() {
   const report_o_reference_t reportODesc  = { 0x01, INPUT_REPORT};
 
   //const mouse_report_reference_t mediaInputDesc  = { 0x02,INPUT_REPORT};// INPUT_REPORT};//, INPUT_REPORT };
-  const report_o_reference_t mediaReportODesc  = { 0x02, FEATURE_REPORT};
+  const report_o_reference_t mediaReportODesc  = { 0x02, INPUT_REPORT};
   
   const static HID_information_t info = { HID_VERSION_1_11, 0x00, 0x03 };
   const ProtocolMode mode = REPORT_PROTOCOL;
@@ -124,7 +124,7 @@ uint8_t init_HID_service() {
 
   COPY_BOOT_MOUSE_INPUT_REPORT_UUID(uuid16);
   //BOOT MOUSE INPUT REPORT
-  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(media_report), (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, 
+  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(boot_mouse_report), (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, 
                            GATT_NOTIFY_ATTRIBUTE_WRITE,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDBMIRCharHandle);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
@@ -389,10 +389,13 @@ void update_media(uint8_t input_report[]){
   updated_report[5] = input_report[5];
   updated_report[6] = input_report[6];
   updated_report[7] = input_report[7];
+
+  //uint8_t uupdated_report[] = {0,0,0,0,0,1,0,0,
+   //                            0,0,0,1,0,0,0,0};
   
   //Media REPORT O
   //ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(composite_report),&updated_report);
-  ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(media_report),&updated_report);
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDMediaReportOCharHandle,0,sizeof(media_report),&updated_report);
 
 
   if (ret != BLE_STATUS_SUCCESS) {
