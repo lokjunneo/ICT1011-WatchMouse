@@ -1,86 +1,193 @@
-#define BLU_DEBUG true
-#include <SPI.h>
-#include <Wire.h>
-#include <TinyScreen.h>
-#include <STBLE.h>
-#include "USBHID_Types.h"
-#include "UUID.h"
-#include "BMA250.h" 
-
-// Accelerometer sensor variables for the sensor and its values
-BMA250 accel_sensor;
-int x, y, z;
-double temp;
-
-#if defined(ARDUINO_ARCH_SAMD)
- #define SerialMonitorInterface SerialUSB
-#else
- #define SerialMonitorInterface Serial
-#endif
-
-#define SerialMonitorInterface SerialUSB
-
-TinyScreen display = TinyScreen(TinyScreenDefault);
-
-
 /*
-Bluetooth stuff.
+Use this functions I prepared:
+1) updateMouseXY(x,y): change mouse position by x and y.  x and y are signed integer 8 bit (int8_t)
+2) Leave BLE_Setup() in setup()
+3) Leave BLE_Loop() in loop()
+4) use ble_connection_state to determine that bluetooth is connected
+ble_connection_state = true means it is connected
 */
-BLEConnection bleconn;
-uint8_t ble_connection_state = false;
 
-uint8_t curr_mouse_report[] = {0,0,0,0};
-uint8_t old_mouse_report[] = {0,0,0,0};
+//Call this in setup()
 
-uint8_t curr_media_report[] = {0,0,0,0,0,0,0,0};
-uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
+long ble_millis = 0; //to store millis(), so we only call it once a loop
 
+const uint8_t ble_total_page = 2;
+uint8_t ble_curr_page_number = 1;
+uint8_t ble_update_delay = 30;
 
-long BLE_Timer = 0;
+//Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
+uint8_t (*ble_updater[ble_total_page])() = {ble_mouse_updater, ble_media_updater};
+uint8_t (*ble_controller[ble_total_page])() = {ble_mouse_ud_move, ble_media_vol};
 
-//set to zero if you don't want to listen to mouse controls
-//uint8_t mouse_mode = 1;
+void BLE_Setup(){
 
-
-void setup() {
-
-  Wire.begin();
-  SerialMonitorInterface.begin(9600); //baud rate or something
-  //while(!SerialMonitorInterface); //make sure we can print stuff in SMI, before we proceed
-
-  display.begin();
-  BLE_Setup();
-
-  SerialMonitorInterface.print("Initializing BMA...");
-  // Set up the BMA250 acccelerometer sensor
-  accel_sensor.begin(BMA250_range_2g, BMA250_update_time_64ms); 
-}
-
-void loop() {
-  
-  BLE_Loop();
-  
-}
-
-/*
-Bluetooth stuff
-*/
-void HID_onConnect(){
-  SerialMonitorInterface.println("onConnect triggered");
-  requestSecurity();
-  //doBond()
-}
-
-void HID_onDisconnect(){
-  //doDisconnect()
-  //ble_connection_state = false;
+  BLE_Init("WatchMouse");
+  BLE_Conn_Setup(&bleconn, HID_onConnect, HID_onDisconnect);
+  init_HID_service();
+  init_Security(HID_onBond);
   setDiscoverable();
+
 }
-void HID_onBond(){
-  SerialMonitorInterface.println("bond event");
-  ble_connection_state = true;
+
+
+void BLE_Loop(){
+  BLE_Process();
+  ble_millis = millis();
+  if (ble_connection_state){
+    bleCheckButton();
+    if (ble_millis - BLE_Timer > ble_update_delay){
+      bleUpdater();
+    }
+    else if (ble_millis - BLE_Timer < 0) {BLE_Timer = 0;} //millis overflows after roughly 50 days
+  }
+}
+//To do: add left and right click
+
+
+void bleCheckButton(){
+  //ble_mouse_ud_move();
+  /*
+  switch (ble_curr_page_number){
+    case 0:
+      ble_mouse_ud_move();
+      break;
+  }*/
+  if ( *ble_controller[ble_curr_page_number]) {(*ble_controller[ble_curr_page_number])();}
+}
+
+void bleUpdater(){
+  /*
+  switch (ble_curr_page_number){
+    case 0:
+      ble_mouse_updater();
+      break;
+    
+  }*/
+  if ( *ble_updater[ble_curr_page_number] ) {(*ble_updater[ble_curr_page_number])();}
+}
+
+/*
+  Mouse related functions
+*/
+
+//Detect button presses
+uint8_t ble_mouse_ud_move(){
+  if (display.getButtons(TSButtonUpperLeft)){
+    updateMouseXY(50,50);
+  }
+  else if (display.getButtons(TSButtonUpperRight)){
+    updateMouseXY(1,1);
+  }
+
 }
 /*
-End of bluetooth stuff
+uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
+  int8_t currX = (int8_t)curr_mouse_report[1];
+  int8_t newX = offsetX + currX;
+  int8_t currY = (int8_t)curr_mouse_report[2];
+  int8_t newY = offsetY+ currY;
+  //overflow: -ve + -ve give positive
+  if (offsetX < 0 && currX < 0 && newX > 0){ newX = -128;}
+  //overflow: +ve + +ve give negative
+  else if (offsetX > 0 && currX > 0 && newX < 0) {newX = 127;}
+
+  if (offsetY < 0 && currY < 0 && newY > 0){ newY = -128;}
+  else if (offsetY > 0 && currY > 0 && newY < 0) {newY = 127;}
+
+  curr_mouse_report[1] = newX;
+  curr_mouse_report[2] = newY;
+
+  //ble_call_update = 40;
+}*/
+
+uint8_t updateMouseXY(int8_t newX,int8_t newY){
+  curr_mouse_report[1] = newX;
+  curr_mouse_report[2] = newY;
+
+  //ble_call_update = 40;
+}
+
+uint8_t ble_mouse_updater(){
+  if (mouse_report_changed()){
+      update_mouse(curr_mouse_report);
+      BLE_Timer = millis();
+      reset_mouse_report();
+  }
+}
+
+uint8_t reset_mouse_report(){
+  old_mouse_report[0] = curr_mouse_report[0];
+  old_mouse_report[1] = curr_mouse_report[1];
+  old_mouse_report[2] = curr_mouse_report[2];
+  old_mouse_report[3] = curr_mouse_report[3];
+  curr_mouse_report[0] = 0;
+  curr_mouse_report[1] = 0;
+  curr_mouse_report[2] = 0;
+  curr_mouse_report[3] = 0;
+}
+
+uint8_t mouse_report_changed(){
+  uint8_t curr_mouse_total = 0;
+  uint8_t old_mouse_total = 0;
+  uint8_t ret = 0;
+  for (int i = 0; i < 4; i++){  
+    curr_mouse_total += curr_mouse_report[i];
+    old_mouse_total += old_mouse_report[i];
+    if (curr_mouse_total){
+      ret = 1;
+      break;
+    }
+  }
+  return (curr_mouse_total || old_mouse_total);
+} 
+
+/*
+  Media Related functions
 */
+
+//handles updating of ble characteristic: media
+uint8_t ble_media_updater(){
+  if (media_report_changed()){
+    update_media(curr_media_report);
+    BLE_Timer = millis();
+    reset_media_report();
+  }
+}
+
+//detect button presses
+uint8_t ble_media_vol(){
+  if (display.getButtons(TSButtonUpperLeft)){
+    curr_media_report[0] = 64;
+    curr_media_report[1] = 0;
+  }
+  else if (display.getButtons(TSButtonUpperRight)){
+    curr_media_report[0] = 32;
+    curr_media_report[1] = 0;
+  }
+}
+
+uint8_t media_report_changed(){
+  uint8_t curr_media_total = 0;
+  uint8_t old_media_total = 0;
+  uint8_t ret = 0;
+  for (int i = 0; i < 8; i++){  
+    curr_media_total += curr_media_report[i];
+    old_media_total += old_media_report[i];
+    if (curr_media_total){
+      ret = 1;
+      break;
+    }
+  }
+  if (curr_media_total){
+  SerialMonitorInterface.println(curr_media_total);}
+  return (curr_media_total || old_media_total);
+} 
+
+uint8_t reset_media_report(){
+  for (int i = 0; i<sizeof(curr_media_report); i++){
+    old_media_report[i] = curr_media_report[i];
+    curr_media_report[i] = 0;
+  }
+}
+
 
