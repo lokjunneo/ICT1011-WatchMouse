@@ -1,4 +1,5 @@
 
+int x, y, z;
 int tempx = 0,tempy = 0;
  void accelerometer_mouse(){
     accel_sensor.read();//This function gets new data from the acccelerometer
@@ -7,11 +8,12 @@ int tempx = 0,tempy = 0;
     // (Makes reading the rest of the program easier)
     x = accel_sensor.X;
     y = accel_sensor.Y;
+    z = accel_sensor.Z;
     //temp = ((accel_sensor.rawTemp * 0.5) + 24.0);
 
     // If the BMA250 is not found, nor connected correctly, these values will be produced
     // by the sensor 
-    if (x == -1 && y == -1) {
+    if (x == -1 && y == -1 && z == -1) {
       // Print error message to Serial Monitor
       SerialMonitorInterface.print("ERROR! NO BMA250 DETECTED!");
     }

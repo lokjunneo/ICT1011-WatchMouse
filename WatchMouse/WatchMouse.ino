@@ -9,8 +9,8 @@
 
 // Accelerometer sensor variables for the sensor and its values
 BMA250 accel_sensor;
-int x, y;
-double temp;
+
+
 
 #if defined(ARDUINO_ARCH_SAMD)
  #define SerialMonitorInterface SerialUSB
