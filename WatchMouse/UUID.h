@@ -163,8 +163,8 @@ custom_report_map_t REPORT_MAP = {
     LOGICAL_MAXIMUM(1), 0x7f,         //   127
     REPORT_SIZE(1),     0x08,         //   Three bytes
     REPORT_COUNT(1),    0x03,
-    //INPUT(1),           0x06,         //   Data, Variable, Relative
-    INPUT(1),           0x02,         //   Data, Variable, Relative
+    INPUT(1),           0x06,         //   Data, Variable, Relative
+    //INPUT(1),           0x02,         //   Data, Variable, Relative
     END_COLLECTION(0),
     END_COLLECTION(0),
 /*

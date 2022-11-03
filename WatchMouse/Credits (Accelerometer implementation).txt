@@ -1,0 +1,3 @@
+Credits to tiny circuit for BMA250cpp, BMA250.h and example code for BMA250
+
+https://learn.tinycircuits.com/Sensors/Accelerometer_TinyShield_Tutorial/

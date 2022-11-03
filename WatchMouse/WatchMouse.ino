@@ -59,8 +59,8 @@ void setup() {
 void loop() {
   
   BLE_Loop();
-  
-  Accelerometer();
+
+  //Accelerometer();
 }
 
 /*

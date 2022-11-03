@@ -1,86 +1,91 @@
- void Accelerometer(){
-  accel_sensor.read();//This function gets new data from the acccelerometer
+long accel_millis = 0;
+ void accelerometer_mouse(){
+  long curr_millis = millis();
+  if (accel_millis > curr_millis) {accel_millis = 0;} //in case of overflow
+  if (curr_millis - accel_millis > 100){
+    accel_sensor.read();//This function gets new data from the acccelerometer
 
-  // Get the acceleration values from the sensor and store them into global variables
-  // (Makes reading the rest of the program easier)
-  x = accel_sensor.X;
-  y = accel_sensor.Y;
-  z = accel_sensor.Z;
-  temp = ((accel_sensor.rawTemp * 0.5) + 24.0);
+    // Get the acceleration values from the sensor and store them into global variables
+    // (Makes reading the rest of the program easier)
+    x = accel_sensor.X;
+    y = accel_sensor.Y;
+    z = accel_sensor.Z;
+    //temp = ((accel_sensor.rawTemp * 0.5) + 24.0);
 
-  // If the BMA250 is not found, nor connected correctly, these values will be produced
-  // by the sensor 
-  if (x == -1 && y == -1 && z == -1) {
-    // Print error message to Serial Monitor
-    SerialMonitorInterface.print("ERROR! NO BMA250 DETECTED!");
+    // If the BMA250 is not found, nor connected correctly, these values will be produced
+    // by the sensor 
+    if (x == -1 && y == -1 && z == -1) {
+      // Print error message to Serial Monitor
+      SerialMonitorInterface.print("ERROR! NO BMA250 DETECTED!");
+    }
+    
+    else { // if we have correct sensor readings: 
+              int stay = 0;
+              int multiple=6;
+              int tempx,tempy;
+      if(x<-206){
+      tempx = -5*multiple;
+      }
+      else if(x<-156){
+        tempx=-4*multiple;
+      }
+      else if(x<-106){
+        tempx=-3*multiple;
+      }
+      else if(x<-56){
+        tempx=-2*multiple;
+      }
+      else if(x>=-56&&x<=56){
+        tempx=stay;
+      }
+      else if(x>56){
+        tempx= 2*multiple;
+      }
+      else if(x>106){
+        tempx= 3*multiple;
+      }
+        else if(x>156){
+        tempx= 4*multiple;
+      }
+      else if(x>206){
+        tempx = 5*multiple;
+      }
+
+
+
+      if(y<-206){
+        tempy=-5*multiple;
+      }
+      else if(y<-156){
+        tempy=-4*multiple;
+      }
+      else if(y<-106){
+        tempy=-3*multiple;
+      }
+      else if(y<-56){
+        tempy=-2*multiple;
+      }
+      else if(y>=-56&&y<=56){
+        tempy=stay;
+      }
+      else if(y>56){
+        tempy=2*multiple;
+      }
+      else if(y>106){
+        tempy=3*multiple;
+      }
+      else if(y>156){
+        tempy=4*multiple;
+      }
+      else if(y>206){
+        tempy=5*multiple;
+      }
+      updateMouseXY(tempy,tempx);
+      accel_millis = millis();
+    }
+    // The BMA250 can only poll new sensor values every 64ms, so this delay
+    // will ensure that we can continue to read values
   }
-  
-  else { // if we have correct sensor readings: 
-             int stay = 0;
-             int multiple=15;
-             int tempx,tempy;
-    if(x<-206){
-    tempx = -5*multiple;
-    }
-    else if(x<-156){
-      tempx=-4*multiple;
-    }
-    else if(x<-106){
-      tempx=-3*multiple;
-    }
-    else if(x<-56){
-      tempx=-2*multiple;
-    }
-    else if(x>=-56&&x<=56){
-      tempx=stay;
-    }
-     else if(x>56){
-      tempx= 2*multiple;
-    }
-     else if(x>106){
-      tempx= 3*multiple;
-    }
-      else if(x>156){
-      tempx= 4*multiple;
-    }
-    else if(x>206){
-      tempx = 5*multiple;
-    }
-
-
-
-    if(y<-206){
-      tempy=-5*multiple;
-    }
-    else if(y<-156){
-      tempy=-4*multiple;
-    }
-    else if(y<-106){
-      tempy=-3*multiple;
-    }
-    else if(y<-56){
-      tempy=-2*multiple;
-    }
-    else if(y>=-56&&y<=56){
-      tempy=stay;
-    }
-    else if(y>56){
-      tempy=2*multiple;
-    }
-    else if(y>106){
-      tempy=3*multiple;
-    }
-    else if(y>156){
-      tempy=4*multiple;
-    }
-    else if(y>206){
-      tempy=5*multiple;
-    }
-    updateMouseXY(tempx,tempy);
-  }
-  // The BMA250 can only poll new sensor values every 64ms, so this delay
-  // will ensure that we can continue to read values
-  delay(100);
   // ***Without the delay, there would not be any sensor output*** 
 }
 /*

@@ -12,8 +12,8 @@ ble_connection_state = true means it is connected
 long ble_millis = 0; //to store millis(), so we only call it once a loop
 
 const uint8_t ble_total_page = 2;
-uint8_t ble_curr_page_number = 1;
-uint8_t ble_update_delay = 30;
+uint8_t ble_curr_page_number = 0;
+uint8_t ble_update_delay = 40;
 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
 uint8_t (*ble_updater[ble_total_page])() = {ble_mouse_updater, ble_media_updater};
@@ -72,15 +72,17 @@ void bleUpdater(){
 
 //Detect button presses
 uint8_t ble_mouse_ud_move(){
+  /*
   if (display.getButtons(TSButtonUpperLeft)){
     updateMouseXY(50,50);
   }
   else if (display.getButtons(TSButtonUpperRight)){
     updateMouseXY(1,1);
-  }
+  }*/
+  accelerometer_mouse();
 
 }
-/*
+
 uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
   int8_t currX = (int8_t)curr_mouse_report[1];
   int8_t newX = offsetX + currX;
@@ -98,14 +100,14 @@ uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
   curr_mouse_report[2] = newY;
 
   //ble_call_update = 40;
-}*/
-
+}
+/*
 uint8_t updateMouseXY(int8_t newX,int8_t newY){
   curr_mouse_report[1] = newX;
   curr_mouse_report[2] = newY;
 
   //ble_call_update = 40;
-}
+}*/
 
 uint8_t ble_mouse_updater(){
   if (mouse_report_changed()){
