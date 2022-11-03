@@ -19,29 +19,63 @@ int tempx = 0,tempy = 0;
     }
     
     else { // if we have correct sensor readings: 
-              int multiple=10;
-              int tempx,tempy;
-      if(x<-56){
-      tempx = -5*multiple;
-      }
-      else if(x>=-56&&x<=56){
-        tempx=0;
-      }
-      else if(x>56){
-        tempx = 5*multiple;
-      }
+      
+     if(x<-206){
+    tempx = -20;
+    }
+    else if(x<-156){
+      tempx=-10;
+    }
+    else if(x<-130){
+      tempx=-5;
+    }
+    else if(x<-80){
+      tempx=-1;
+    }
+    else if(x>=-80&&x<=80){
+      tempx=0;
+    }
+     else if(x>80){
+      tempx= 1;
+    }
+     else if(x>130){
+      tempx= 5;
+    }
+      else if(x>156){
+      tempx= 10;
+    }
+    else if(x>206){
+      tempx = 20;
+    }
 
+        if(y<-206){
+      tempy=-20;
+    }
+    else if(y<-156){
+      tempy=-10;
+    }
+    else if(y<-106){
+      tempy=-5;
+    }
+    else if(y<-36){
+      tempy=-1;
+    }
+    else if(y>=-36&&y<=36){
+      tempy=0;
+    }
+    else if(y>36){
+      tempy=1;
+    }
+    else if(y>106){
+      tempy=5;
+    }
+    else if(y>156){
+      tempy=10;
+    }
+    else if(y>206){
+      tempy=20;
+    }
 
-
-      if(y<-56){
-        tempy=-5*multiple;
-      }
-      else if(y>=-56&&y<=56){
-        tempy=0;
-      }
-      else if(y>56){
-        tempy=5*multiple;
-      }
       updateMouseXY(tempy*-1,tempx);
     }
     // The BMA250 can only poll new sensor values every 64ms, so this delay
