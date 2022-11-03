@@ -19,8 +19,8 @@ uint8_t ble_connection_state = false;
 uint8_t curr_mouse_report[] = {0,0,0,0};
 uint8_t old_mouse_report[] = {0,0,0,0};
 
-uint8_t curr_media_report[] = {0,0,0,0,0,0,0,0};
-uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
+uint8_t curr_media_report[] = {0,0};
+uint8_t old_media_report[] = {0,0};
 
 
 long BLE_Timer = 0;

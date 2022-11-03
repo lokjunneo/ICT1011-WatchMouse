@@ -184,8 +184,9 @@ uint8_t init_HID_service() {
   if (ret != BLE_STATUS_SUCCESS) goto fail;
 
   //MEDIA REPORT O
+  
   COPY_REPORT_CHAR_UUID(uuid16);
-  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(media_report),
+  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(MediaKeyReport),
                            (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, GATT_NOTIFY_ATTRIBUTE_WRITE,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDMediaReportOCharHandle);
   
@@ -373,29 +374,34 @@ void update_mouse(uint8_t input_report[]){
   if (ret != BLE_STATUS_SUCCESS) {
     SerialMonitorInterface.println("Failed to update Report characteristics");
   };
+  SerialMonitorInterface.print(input_report[0]);
+  SerialMonitorInterface.print(",");
+  SerialMonitorInterface.print(input_report[1]);
+  SerialMonitorInterface.print(",");
+  SerialMonitorInterface.print(input_report[2]);
+  SerialMonitorInterface.print(",");
+  SerialMonitorInterface.println(input_report[3]);
   SerialMonitorInterface.println("Mouse update process: complete");
 }
 
 void update_media(uint8_t input_report[]){
   
   uint8_t ret;
-  uint8_t updated_report[] = {0,0,0,0,0,0,0,0};
+  uint8_t updated_report[] = {0,0};
   
   updated_report[0] = input_report[0];
   updated_report[1] = input_report[1];
-  updated_report[2] = input_report[2];
-  updated_report[3] = input_report[3];
-  updated_report[4] = input_report[4];
-  updated_report[5] = input_report[5];
-  updated_report[6] = input_report[6];
-  updated_report[7] = input_report[7];
 
-  //uint8_t uupdated_report[] = {0,0,0,0,0,1,0,0,
-   //                            0,0,0,1,0,0,0,0};
+  
+  //uint8_t uupdated_report[] = {0,0,0,0,0,0,0,0,
+    //                          0,0,0,0,0,0,0,1};
+  
+
+  //uint8_t uupdated_report[2] = {8,0};
   
   //Media REPORT O
-  //ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(composite_report),&updated_report);
-  ret = aci_gatt_update_char_value(HIDServHandle, HIDMediaReportOCharHandle,0,sizeof(media_report),&updated_report);
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDMediaReportOCharHandle,0,sizeof(MediaKeyReport),&updated_report);
+  //ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,4,&uupdated_report);
 
 
   if (ret != BLE_STATUS_SUCCESS) {

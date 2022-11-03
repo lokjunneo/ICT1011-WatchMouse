@@ -12,7 +12,7 @@ ble_connection_state = true means it is connected
 long ble_millis = 0; //to store millis(), so we only call it once a loop
 
 const uint8_t ble_total_page = 2;
-uint8_t ble_curr_page_number = 0;
+uint8_t ble_curr_page_number = 1;
 uint8_t ble_update_delay = 30;
 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
@@ -76,7 +76,7 @@ uint8_t ble_mouse_ud_move(){
     updateMouseXY(50,50);
   }
   else if (display.getButtons(TSButtonUpperRight)){
-    updateMouseXY(100,100);
+    updateMouseXY(1,1);
   }
 
 }
@@ -157,10 +157,12 @@ uint8_t ble_media_updater(){
 //detect button presses
 uint8_t ble_media_vol(){
   if (display.getButtons(TSButtonUpperLeft)){
-    curr_media_report[5] = 1;
+    curr_media_report[0] = 64;
+    curr_media_report[1] = 0;
   }
   else if (display.getButtons(TSButtonUpperRight)){
-    curr_media_report[6] = 1;
+    curr_media_report[0] = 32;
+    curr_media_report[1] = 0;
   }
 }
 

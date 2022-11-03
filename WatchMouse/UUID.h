@@ -97,7 +97,8 @@ typedef const uint8_t custom_report_map_t[];
 typedef const uint8_t * report_t;
 
 uint8_t boot_mouse_report[] = { 0,0,0,0};
-uint8_t media_report[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint8_t media_report[] = {0,0,0,0,0,0,0,0,
+                          0,0,0,0,0,0,0,0};
 //uint8_t composite_report[] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 typedef struct {
