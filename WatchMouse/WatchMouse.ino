@@ -38,6 +38,8 @@ uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
 
 long BLE_Timer = 0;
 
+int menu_page_number = 1;
+
 //set to zero if you don't want to listen to mouse controls
 //uint8_t mouse_mode = 1;
 
