@@ -9,75 +9,50 @@ long accel_millis = 0;
     // (Makes reading the rest of the program easier)
     x = accel_sensor.X;
     y = accel_sensor.Y;
-    z = accel_sensor.Z;
     //temp = ((accel_sensor.rawTemp * 0.5) + 24.0);
 
     // If the BMA250 is not found, nor connected correctly, these values will be produced
     // by the sensor 
-    if (x == -1 && y == -1 && z == -1) {
+    if (x == -1 && y == -1) {
       // Print error message to Serial Monitor
       SerialMonitorInterface.print("ERROR! NO BMA250 DETECTED!");
     }
     
     else { // if we have correct sensor readings: 
-              int stay = 0;
+              
               int multiple=6;
               int tempx,tempy;
-      if(x<-206){
+      if(x<-156){
       tempx = -5*multiple;
       }
-      else if(x<-156){
-        tempx=-4*multiple;
-      }
-      else if(x<-106){
+      else if(x<-56){
         tempx=-3*multiple;
       }
-      else if(x<-56){
-        tempx=-2*multiple;
-      }
       else if(x>=-56&&x<=56){
-        tempx=stay;
+        tempx=0;
       }
       else if(x>56){
-        tempx= 2*multiple;
-      }
-      else if(x>106){
         tempx= 3*multiple;
       }
-        else if(x>156){
-        tempx= 4*multiple;
-      }
-      else if(x>206){
+      else if(x>156){
         tempx = 5*multiple;
       }
 
 
 
-      if(y<-206){
+      if(y<-156){
         tempy=-5*multiple;
       }
-      else if(y<-156){
-        tempy=-4*multiple;
-      }
-      else if(y<-106){
+      else if(y<-56){
         tempy=-3*multiple;
       }
-      else if(y<-56){
-        tempy=-2*multiple;
-      }
       else if(y>=-56&&y<=56){
-        tempy=stay;
+        tempy=0;
       }
       else if(y>56){
-        tempy=2*multiple;
-      }
-      else if(y>106){
         tempy=3*multiple;
       }
       else if(y>156){
-        tempy=4*multiple;
-      }
-      else if(y>206){
         tempy=5*multiple;
       }
       updateMouseXY(tempy,tempx);

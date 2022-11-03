@@ -9,7 +9,7 @@
 
 // Accelerometer sensor variables for the sensor and its values
 BMA250 accel_sensor;
-int x, y, z;
+int x, y;
 double temp;
 
 #if defined(ARDUINO_ARCH_SAMD)
@@ -50,8 +50,6 @@ void setup() {
 
   display.begin();
   BLE_Setup();
-
-  SerialMonitorInterface.print("Initializing BMA...");
   // Set up the BMA250 acccelerometer sensor
   accel_sensor.begin(BMA250_range_2g, BMA250_update_time_64ms); 
 }
