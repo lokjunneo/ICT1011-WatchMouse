@@ -1,8 +1,9 @@
 long accel_millis = 0;
+int tempx = 0,tempy = 0;
  void accelerometer_mouse(){
   long curr_millis = millis();
   if (accel_millis > curr_millis) {accel_millis = 0;} //in case of overflow
-  if (curr_millis - accel_millis > 100){
+  if (curr_millis - accel_millis > 10){
     accel_sensor.read();//This function gets new data from the acccelerometer
 
     // Get the acceleration values from the sensor and store them into global variables
@@ -19,7 +20,6 @@ long accel_millis = 0;
     }
     
     else { // if we have correct sensor readings: 
-              
               int multiple=6;
               int tempx,tempy;
       if(x<-156){
