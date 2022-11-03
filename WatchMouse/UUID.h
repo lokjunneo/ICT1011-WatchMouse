@@ -98,6 +98,7 @@ typedef const uint8_t * report_t;
 
 uint8_t boot_mouse_report[] = { 0,0,0,0};
 uint8_t media_report[] = {0,0,0,0,0,0,0,0};
+//uint8_t composite_report[] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 typedef struct {
     uint32_t length;
@@ -161,7 +162,8 @@ custom_report_map_t REPORT_MAP = {
     LOGICAL_MAXIMUM(1), 0x7f,         //   127
     REPORT_SIZE(1),     0x08,         //   Three bytes
     REPORT_COUNT(1),    0x03,
-    INPUT(1),           0x06,         //   Data, Variable, Relative
+    //INPUT(1),           0x06,         //   Data, Variable, Relative
+    INPUT(1),           0x02,         //   Data, Variable, Relative
     END_COLLECTION(0),
     END_COLLECTION(0),
 
@@ -170,8 +172,8 @@ custom_report_map_t REPORT_MAP = {
     COLLECTION(1),      0x01,          // COLLECTION (Application)
     REPORT_ID(1),       0x02,          //   REPORT_ID 2, media keys id
     USAGE_PAGE(1),      0x07,          //   USAGE_PAGE (Kbrd/Keypad)
-    USAGE_MINIMUM(1),   0xE0,          //   USAGE_MINIMUM (0xE0)
-    USAGE_MAXIMUM(1),   0xE7,          //   USAGE_MAXIMUM (0xE7)
+    USAGE_MINIMUM(1),   0x00,          //   USAGE_MINIMUM (0xE0)
+    USAGE_MAXIMUM(1),   0xE9,          //   USAGE_MAXIMUM (0xE7)
     LOGICAL_MINIMUM(1), 0x00,          //   LOGICAL_MINIMUM (0)
     LOGICAL_MAXIMUM(1), 0x01,          //   Logical Maximum (1)
     REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)

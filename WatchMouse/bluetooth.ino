@@ -391,8 +391,8 @@ void update_media(uint8_t input_report[]){
   updated_report[7] = input_report[7];
   
   //Media REPORT O
-  ret = aci_gatt_update_char_value(HIDServHandle, HIDMediaReportOCharHandle,0,sizeof(media_report),&updated_report);
-  //ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(media_report),&updated_report);
+  //ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(composite_report),&updated_report);
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDReportCharHandle,0,sizeof(media_report),&updated_report);
 
 
   if (ret != BLE_STATUS_SUCCESS) {

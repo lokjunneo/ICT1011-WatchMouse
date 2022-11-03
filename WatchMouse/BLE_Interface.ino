@@ -73,14 +73,14 @@ void bleUpdater(){
 //Detect button presses
 uint8_t ble_mouse_ud_move(){
   if (display.getButtons(TSButtonUpperLeft)){
-    updateMouseXY(0,1);
+    updateMouseXY(50,50);
   }
   else if (display.getButtons(TSButtonUpperRight)){
-    updateMouseXY(0,-1);
+    updateMouseXY(100,100);
   }
 
 }
-
+/*
 uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
   int8_t currX = (int8_t)curr_mouse_report[1];
   int8_t newX = offsetX + currX;
@@ -94,6 +94,13 @@ uint8_t updateMouseXY(int8_t offsetX,int8_t offsetY){
   if (offsetY < 0 && currY < 0 && newY > 0){ newY = -128;}
   else if (offsetY > 0 && currY > 0 && newY < 0) {newY = 127;}
 
+  curr_mouse_report[1] = newX;
+  curr_mouse_report[2] = newY;
+
+  //ble_call_update = 40;
+}*/
+
+uint8_t updateMouseXY(int8_t newX,int8_t newY){
   curr_mouse_report[1] = newX;
   curr_mouse_report[2] = newY;
 
@@ -150,10 +157,10 @@ uint8_t ble_media_updater(){
 //detect button presses
 uint8_t ble_media_vol(){
   if (display.getButtons(TSButtonUpperLeft)){
-    curr_media_report[6] = 1;
+    curr_media_report[5] = 5;
   }
   else if (display.getButtons(TSButtonUpperRight)){
-    curr_media_report[5] = 1;
+    curr_media_report[6] = 6;
   }
 }
 
