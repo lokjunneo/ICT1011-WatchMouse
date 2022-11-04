@@ -17,6 +17,7 @@ uint8_t ble_update_delay = 30;
 
 long BLE_Timer = 0; //used to delay updating of bluetooth characteristics
 long ble_command_timer = 0; //delay for command buttons (Lower Left and Right), so user wont accidentally scroll through multiple pages at once
+long ble_calibrate_timer = 0; //In mouse mode, to track how long user has been holding down left and right btn
 
 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
@@ -76,7 +77,7 @@ uint8_t ble_mouse_accel_move(){
   if (display.getButtons(TSButtonUpperLeft)){
     updateMouseLR_Click(1,0);
   }
-  else if (display.getButtons(TSButtonUpperRight)){
+  if (display.getButtons(TSButtonUpperRight)){
     updateMouseLR_Click(0,1);
   }
   accelerometer_mouse();
@@ -289,7 +290,7 @@ uint8_t ble_remote_page_check(){
           break;
       }
       ble_drawn_remote_page = ble_curr_page_number;     
-      //}   
+      
     }
   }
 }

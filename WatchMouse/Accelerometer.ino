@@ -7,7 +7,7 @@ long update_millis = 0; //to delay updateMouse
 int accel_cal_x = 0, accel_cal_y = 0; //For storing calibration data of user
 
 void accelerometer_mouse(){
-long curr_millis = millis();
+  long curr_millis = millis();
 
   /* In case of overflow */
   if (update_millis > curr_millis){
@@ -102,4 +102,7 @@ long curr_millis = millis();
   }
 }
   // ***Without the delay, there would not be any sensor output*** 
-
+void accel_calibrate(){
+  accel_cal_x = accel_x;
+  accel_cal_y = accel_y;
+}
