@@ -22,7 +22,8 @@ long ble_command_timer = 0; //delay for command buttons (Lower Left and Right), 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
 uint8_t (*ble_updater[ble_total_page])() = {ble_media_updater, ble_mouse_updater};
 uint8_t (*ble_controller[ble_total_page])() = {ble_media_vol, ble_mouse_accel_move};
-//char ble_page_text[ble_total_page+1] = {"Back","Volume","Mouse Control"}; 
+char * ble_page_text[ble_total_page] = {"Volume","Mouse"}; 
+uint8_t ble_page_text_size[ble_total_page] = {6,5};
 
 void BLE_Setup(){
 
@@ -189,11 +190,12 @@ uint8_t reset_media_report(){
   }
 }
 
-void ble_quick_draw(int draw_x, int draw_y, char text[], int text_size){
+void ble_quick_draw(int draw_x, int draw_y, char text[], const int text_size){
   display.setFont(thinPixel7_10ptFontInfo);
-  char str[text_size];
+  char str[text_size+1];
+  str[text_size] = '\0'; //terminating character
   for (int i = 0; i<text_size; i++){
-    str[i] = text[i];//text[text_size];
+    str[i] = text[i];
   } 
   display.setCursor(draw_x, draw_y);
   display.fontColor(TS_8b_White, TS_8b_Black);
@@ -241,6 +243,7 @@ uint8_t ble_leftBtn(){
           ble_curr_page_number = 0;
           menu_page_number = 1;
           ble_drawn_remote_page = 0;
+          display.clearScreen();
           
         }
         ble_command_timer = millis();
@@ -273,9 +276,20 @@ uint8_t ble_remote_page_check(){
   if (menu_page_number == 0){
     if (ble_drawn_remote_page != ble_curr_page_number){
       display.clearScreen();
-      if (ble_drawn_remote_page){
-        ble_drawn_remote_page = ble_curr_page_number;     
-      }   
+      ble_remote_page_bar_print();
+      //if (ble_drawn_remote_page){
+      switch (ble_curr_page_number){
+        case 1:
+          ble_quick_draw(90,0, "+", 1);
+          ble_quick_draw(0,0,"-", 1);
+          break;
+        case 2:
+          ble_quick_draw(90,0,"R",1);
+          ble_quick_draw(0,0,"L",1);
+          break;
+      }
+      ble_drawn_remote_page = ble_curr_page_number;     
+      //}   
     }
   }
 }
@@ -289,4 +303,26 @@ void ble_debug_print(){
   SerialMonitorInterface.print(ble_drawn_menu_page);
   SerialMonitorInterface.print(", ble_drawn_remote_page is now: ");
   SerialMonitorInterface.println(ble_drawn_remote_page);
+}
+
+/*
+  Print out the navigation bar, as stored in ble_page_text
+*/
+uint8_t ble_remote_page_bar_print(){
+  //If there is still one remote control page before
+  if (ble_curr_page_number-2 >= 0){
+    ble_quick_draw(0,50,"<", 1);
+    ble_quick_draw(5,50, ble_page_text[ble_curr_page_number-2], ble_page_text_size[ble_curr_page_number-2]);
+  }
+  //If there is no more remmote control page before this (Would be menu page before this)
+  else {
+    ble_quick_draw(0,50,"< Back", 6);
+  }
+  if (ble_curr_page_number +1 <= ble_total_page){
+    int strLen = ble_page_text_size[ble_curr_page_number];
+    ble_quick_draw(90-(min(90,strLen*6)),50, ble_page_text[ble_curr_page_number], strLen);
+    ble_quick_draw(90,50,">", 1);
+  }
+  int strLen = ble_page_text_size[ble_curr_page_number-1];
+  ble_quick_draw(50 - min(50,(strLen * 3)),0, ble_page_text[ble_curr_page_number-1], strLen);
 }
