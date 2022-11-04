@@ -22,12 +22,19 @@ BMA250 accel_sensor;
 
 TinyScreen display = TinyScreen(TinyScreenDefault);
 
+/*
+Menu stuff
+*/
 
+int menu_page_number = 1;
 /*
 Bluetooth stuff.
 */
 BLEConnection bleconn;
 uint8_t ble_connection_state = false;
+
+int8_t ble_drawn_menu_page = 0;
+int8_t ble_drawn_remote_page = 0;
 
 uint8_t curr_mouse_report[] = {0,0,0,0};
 uint8_t old_mouse_report[] = {0,0,0,0};
@@ -36,12 +43,7 @@ uint8_t curr_media_report[] = {0,0,0,0,0,0,0,0};
 uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
 
 
-long BLE_Timer = 0;
 
-int menu_page_number = 1;
-
-//set to zero if you don't want to listen to mouse controls
-//uint8_t mouse_mode = 1;
 
 
 void setup() {
@@ -76,10 +78,12 @@ void HID_onDisconnect(){
   //doDisconnect()
   //ble_connection_state = false;
   setDiscoverable();
+  ble_drawn_menu_page = 0;
 }
 void HID_onBond(){
   SerialMonitorInterface.println("bond event");
   ble_connection_state = true;
+  ble_drawn_menu_page = 0;
 }
 /*
 End of bluetooth stuff

@@ -55,9 +55,6 @@ long curr_millis = millis();
         tempx= 1;
       }
 
-
-
-
       if(y<-206){
         tempy=-10;
       }
@@ -87,13 +84,13 @@ long curr_millis = millis();
       }
 
 
-
+/*
       SerialMonitorInterface.print("x = ");  
       SerialMonitorInterface.print(x);
       SerialMonitorInterface.print(", y = ");  
       SerialMonitorInterface.print(y);
       SerialMonitorInterface.print(", z = ");  
-      SerialMonitorInterface.println(z);
+      SerialMonitorInterface.println(z);*/
       updateMouseXY(tempy,tempx);
     }
     update_millis = millis();

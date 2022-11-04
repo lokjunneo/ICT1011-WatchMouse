@@ -15,9 +15,14 @@ const uint8_t ble_total_page = 2;
 uint8_t ble_curr_page_number = 0;
 uint8_t ble_update_delay = 30;
 
+long BLE_Timer = 0; //used to delay updating of bluetooth characteristics
+long ble_command_timer = 0; //delay for command buttons (Lower Left and Right), so user wont accidentally scroll through multiple pages at once
+
+
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
-uint8_t (*ble_updater[ble_total_page])() = {ble_mouse_updater, ble_media_updater};
-uint8_t (*ble_controller[ble_total_page])() = {ble_mouse_accel_move, ble_media_vol};
+uint8_t (*ble_updater[ble_total_page])() = {ble_media_updater, ble_mouse_updater};
+uint8_t (*ble_controller[ble_total_page])() = {ble_media_vol, ble_mouse_accel_move};
+//char ble_page_text[ble_total_page+1] = {"Back","Volume","Mouse Control"}; 
 
 void BLE_Setup(){
 
@@ -32,38 +37,32 @@ void BLE_Setup(){
 
 void BLE_Loop(){
   BLE_Process();
+  ble_menu_page_check();
+  ble_rightBtn();
   ble_millis = millis();
-  if (ble_connection_state){
+  if (ble_millis < BLE_Timer){
+    BLE_Timer = 0;
+    ble_command_timer = 0;
+  }
+  if (ble_connection_state && ble_curr_page_number){
+    ble_remote_page_check();
     bleCheckButton();
     if (ble_millis - BLE_Timer > ble_update_delay){
       bleUpdater();
     }
     else if (ble_millis - BLE_Timer < 0) {BLE_Timer = 0;} //millis overflows after roughly 50 days
+    ble_leftBtn();
   }
 }
 //To do: add left and right click
 
 
 void bleCheckButton(){
-  //ble_mouse_ud_move();
-  /*
-  switch (ble_curr_page_number){
-    case 0:
-      ble_mouse_ud_move();
-      break;
-  }*/
-  if ( *ble_controller[ble_curr_page_number]) {(*ble_controller[ble_curr_page_number])();}
+  if ( *ble_controller[ble_curr_page_number-1]) {(*ble_controller[ble_curr_page_number-1])();}
 }
 
 void bleUpdater(){
-  /*
-  switch (ble_curr_page_number){
-    case 0:
-      ble_mouse_updater();
-      break;
-    
-  }*/
-  if ( *ble_updater[ble_curr_page_number] ) {(*ble_updater[ble_curr_page_number])();}
+  if ( *ble_updater[ble_curr_page_number-1] ) {(*ble_updater[ble_curr_page_number-1])();}
 }
 
 /*
@@ -106,13 +105,6 @@ uint8_t updateMouseLR_Click(bool left, bool right){
   curr_mouse_report[0] |= left;
   curr_mouse_report[0] |= right*2;
 }
-/*
-uint8_t updateMouseXY(int8_t newX,int8_t newY){
-  curr_mouse_report[1] = newX;
-  curr_mouse_report[2] = newY;
-
-  //ble_call_update = 40;
-}*/
 
 uint8_t ble_mouse_updater(){
   if (mouse_report_changed()){
@@ -197,4 +189,104 @@ uint8_t reset_media_report(){
   }
 }
 
+void ble_quick_draw(int draw_x, int draw_y, char text[], int text_size){
+  display.setFont(thinPixel7_10ptFontInfo);
+  char str[text_size];
+  for (int i = 0; i<text_size; i++){
+    str[i] = text[i];//text[text_size];
+  } 
+  display.setCursor(draw_x, draw_y);
+  display.fontColor(TS_8b_White, TS_8b_Black);
+  display.print(str);
+}
 
+/*
+  Check if currently on page 1 of the menu, and check if buttons have been drawn
+*/
+uint8_t ble_rightBtn(){
+  if (display.getButtons(TSButtonLowerRight)){
+    if (ble_millis - ble_command_timer > 200){
+      if (menu_page_number <= 1){
+        if (menu_page_number){
+          if (ble_connection_state){
+            menu_page_number = 0;
+            ble_drawn_menu_page = 0;
+            ble_curr_page_number = 1;
+          }
+        }
+        else {
+          if ((ble_curr_page_number +1) <= ble_total_page){
+            ble_curr_page_number++;
+            SerialMonitorInterface.println("Incrementing");
+            SerialMonitorInterface.println(ble_drawn_menu_page);
+          }
+        }
+        ble_command_timer = millis();  
+      }
+
+      SerialMonitorInterface.println("Right btn clicked");
+      ble_debug_print();
+    }
+  }
+}
+
+uint8_t ble_leftBtn(){
+  if (display.getButtons(TSButtonLowerLeft)){
+    if (ble_millis - ble_command_timer > 200){
+      if (menu_page_number < 1){
+        if (ble_curr_page_number -1 > 0){
+          ble_curr_page_number--;
+        }
+        else {
+          ble_curr_page_number = 0;
+          menu_page_number = 1;
+          ble_drawn_remote_page = 0;
+          
+        }
+        ble_command_timer = millis();
+      }  
+      SerialMonitorInterface.println("Left btn clicked");
+      ble_debug_print();
+    }
+  }
+}
+
+
+uint8_t ble_menu_page_check(){
+  if (menu_page_number == 1){
+    if(!ble_drawn_menu_page){
+      if (ble_connection_state){
+        ble_quick_draw(51,50,"Remote >", 8);
+      }
+      else{
+        ble_quick_draw(51,50,"Remote x", 8);
+      }
+    ble_drawn_menu_page = 1;
+    }
+  }
+  else {
+    ble_drawn_menu_page = 0;
+  }
+}
+
+uint8_t ble_remote_page_check(){
+  if (menu_page_number == 0){
+    if (ble_drawn_remote_page != ble_curr_page_number){
+      display.clearScreen();
+      if (ble_drawn_remote_page){
+        ble_drawn_remote_page = ble_curr_page_number;     
+      }   
+    }
+  }
+}
+
+void ble_debug_print(){
+  SerialMonitorInterface.print("Menu page number is now: ");
+  SerialMonitorInterface.print(menu_page_number);
+  SerialMonitorInterface.print(", ble_curr_page_number is now: ");
+  SerialMonitorInterface.print(ble_curr_page_number);
+  SerialMonitorInterface.print(", ble_drawn_menu_page is now: ");
+  SerialMonitorInterface.print(ble_drawn_menu_page);
+  SerialMonitorInterface.print(", ble_drawn_remote_page is now: ");
+  SerialMonitorInterface.println(ble_drawn_remote_page);
+}
