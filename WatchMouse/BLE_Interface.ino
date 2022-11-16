@@ -11,7 +11,7 @@ ble_connection_state = true means it is connected
 
 long ble_millis = 0; //to store millis(), so we only call it once a loop
 
-const uint8_t ble_total_page = 2;
+const uint8_t ble_total_page = 3;
 uint8_t ble_curr_page_number = 0;
 uint8_t ble_update_delay = 30;
 
@@ -21,10 +21,10 @@ long ble_calibrate_timer = 0; //In mouse mode, to track how long user has been h
 
 
 //Tried to have a function to store the pointer to functions, but it affected other unrelated global array value
-uint8_t (*ble_updater[ble_total_page])() = {ble_media_updater, ble_mouse_updater};
-uint8_t (*ble_controller[ble_total_page])() = {ble_media_vol, ble_mouse_accel_move};
-char * ble_page_text[ble_total_page] = {"Volume","Mouse"}; 
-uint8_t ble_page_text_size[ble_total_page] = {6,5};
+uint8_t (*ble_updater[ble_total_page])() = {ble_media_updater, ble_mouse_updater, ble_keyboard_updater};
+uint8_t (*ble_controller[ble_total_page])() = {ble_media_vol, ble_mouse_accel_move,ble_keyboard_lr};
+char * ble_page_text[ble_total_page] = {"Volume","Mouse","Keyboard"}; 
+uint8_t ble_page_text_size[ble_total_page] = {6,5,8};
 
 void BLE_Setup(){
 
@@ -150,6 +150,7 @@ uint8_t mouse_report_changed(){
 uint8_t ble_media_updater(){
   if (media_report_changed()){
     update_media(curr_media_report);
+    //update_keyboard(curr_keyboard_report);
     BLE_Timer = millis();
     reset_media_report();
   }
@@ -188,6 +189,55 @@ uint8_t reset_media_report(){
   for (int i = 0; i<sizeof(curr_media_report); i++){
     old_media_report[i] = curr_media_report[i];
     curr_media_report[i] = 0;
+  }
+}
+
+/* Keyboard report stuff */
+
+//handles updating of ble characteristic: Keyboard
+uint8_t ble_keyboard_updater(){
+  if (keyboard_report_changed()){
+    update_keyboard(curr_keyboard_report);
+    //update_keyboard(curr_keyboard_report);
+    BLE_Timer = millis();
+    reset_keyboard_report();
+  }
+}
+
+//detect button presses
+uint8_t ble_keyboard_lr(){
+  if (display.getButtons(TSButtonUpperLeft)){
+    curr_keyboard_report[0] = 2;
+    curr_keyboard_report[1] = 0;
+    SerialMonitorInterface.println("Left btn works keyboard");
+  }
+  else if (display.getButtons(TSButtonUpperRight)){
+    curr_keyboard_report[0] = 1;
+    curr_keyboard_report[1] = 0;
+  }
+}
+
+uint8_t keyboard_report_changed(){
+  uint8_t curr_keyboard_total = 0;
+  uint8_t old_keyboard_total = 0;
+  uint8_t ret = 0;
+  for (int i = 0; i < 8; i++){  
+    curr_keyboard_total += curr_keyboard_report[i];
+    old_keyboard_total += old_keyboard_report[i];
+    if (curr_keyboard_total){
+      ret = 1;
+      break;
+    }
+  }
+  if (curr_keyboard_total){
+  SerialMonitorInterface.println(curr_keyboard_total);}
+  return (curr_keyboard_total || old_keyboard_total);
+} 
+
+uint8_t reset_keyboard_report(){
+  for (int i = 0; i<sizeof(curr_keyboard_report); i++){
+    old_keyboard_report[i] = curr_keyboard_report[i];
+    curr_keyboard_report[i] = 0;
   }
 }
 
@@ -285,6 +335,10 @@ uint8_t ble_remote_page_check(){
           ble_quick_draw(0,0,"-", 1);
           break;
         case 2:
+          ble_quick_draw(90,0,"R",1);
+          ble_quick_draw(0,0,"L",1);
+          break;
+        case 3:
           ble_quick_draw(90,0,"R",1);
           ble_quick_draw(0,0,"L",1);
           break;

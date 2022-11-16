@@ -178,6 +178,11 @@ custom_report_map_t REPORT_MAP = {
     REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
     REPORT_COUNT(1),    0x05,          //   REPORT_COUNT (5)
     INPUT(1),           0x01,
+    //Padding of 5 bits
+    //Honestly, the padding could have been behind, but the report data for media keys uses bits [5] and [6] for volume, due to previous implementations
+    //So this is placed here as a form of backwards compatibility
+    //Also to note, the report map has a size limit. UART service intialization will fail if it is too huge
+    //Lastly, input type for padding must be 0x01 (constant)
     REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
     REPORT_COUNT(1),    0x03,          //   REPORT_COUNT (5)
     USAGE(1),           0xE9,          //   USAGE (Volume Increment)    ; bit 5: 32
@@ -195,8 +200,6 @@ custom_report_map_t REPORT_MAP = {
     INPUT(1),        0x02,          //   INPUT (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
     END_COLLECTION(0),                  // END_COLLECTION
 
-
-    
     USAGE_PAGE(1),      0x01,          // USAGE_PAGE (Generic Desktop Page)
     USAGE(1),           0x06,          // USAGE (Keyboard)
     COLLECTION(1),      0x01,          // COLLECTION (Application)

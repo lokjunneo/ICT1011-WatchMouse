@@ -207,7 +207,7 @@ uint8_t init_HID_service() {
                               10, CHAR_VALUE_LEN_CONSTANT, &HIDMediaReportODescCharHandle);
 
   if (ret != BLE_STATUS_SUCCESS) goto fail;
-/*
+
   //KEYBOARD REPORT O
   
   COPY_REPORT_CHAR_UUID(uuid16);
@@ -225,7 +225,7 @@ uint8_t init_HID_service() {
                               10, CHAR_VALUE_LEN_CONSTANT, &HIDKeyboardReportODescCharHandle);
 
   SerialMonitorInterface.println("Added char desc.\n"); 
-*/
+
   if (ret != BLE_STATUS_SUCCESS) goto fail;
 
 
@@ -433,3 +433,18 @@ void update_media(uint8_t input_report[]){
   SerialMonitorInterface.println("Media update process: complete");
 }
 
+void update_keyboard(uint8_t input_report[]){
+  
+  uint8_t updated_report[] = {0,0};
+  
+  updated_report[0] = input_report[0];
+  updated_report[1] = input_report[1];
+  uint8_t ret;
+
+  ret = aci_gatt_update_char_value(HIDServHandle, HIDKeyboardReportOCharHandle,0,sizeof(keyboard_report),&updated_report);
+
+  if (ret != BLE_STATUS_SUCCESS) {
+    SerialMonitorInterface.println("Failed to update Keyboard Report O characteristics");
+  };
+  SerialMonitorInterface.println("Keyboard update process: complete");
+}

@@ -42,6 +42,9 @@ uint8_t old_mouse_report[] = {0,0,0,0};
 uint8_t curr_media_report[] = {0,0,0,0,0,0,0,0};
 uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
 
+uint8_t curr_keyboard_report[] = {0,0};
+uint8_t old_keyboard_report[] = {0,0};
+
 
 
 
