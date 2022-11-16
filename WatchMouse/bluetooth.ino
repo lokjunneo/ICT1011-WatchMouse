@@ -8,7 +8,7 @@ BLEConnection * primaryConn = NULL;
 
 //We store the service handle for human interface device here, and HID Control Point Characteristic Handle
 uint16_t HIDServHandle, HIDCPCharHandle, HIDRPCharHandle, HIDBMIRCharHandle, HIDBMIRDescCharHandle, HIDInfCharHandle, HIDProtocolCharHandle, 
-        HIDReportCharHandle, HIDReportDescCharHandle, HIDMediaReportOCharHandle, HIDMediaReportODescCharHandle;
+        HIDReportCharHandle, HIDReportDescCharHandle, HIDMediaReportOCharHandle, HIDMediaReportODescCharHandle, HIDKeyboardReportOCharHandle, HIDKeyboardReportODescCharHandle;
 
 //const long BLE_timer;
 
@@ -91,6 +91,8 @@ uint8_t init_HID_service() {
 
   //const mouse_report_reference_t mediaInputDesc  = { 0x02,INPUT_REPORT};// INPUT_REPORT};//, INPUT_REPORT };
   const report_o_reference_t mediaReportODesc  = { 0x02, INPUT_REPORT};
+
+  const report_o_reference_t keyboardReportODesc  = { 0x03, INPUT_REPORT};
   
   const static HID_information_t info = { HID_VERSION_1_11, 0x00, 0x03 };
   const ProtocolMode mode = REPORT_PROTOCOL;
@@ -112,15 +114,18 @@ uint8_t init_HID_service() {
   ret =  aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, 20, CHAR_PROP_WRITE_WITHOUT_RESP, ATTR_PERMISSION_NONE, GATT_NOTIFY_ATTRIBUTE_WRITE,
                            16, 1, &HIDCPCharHandle);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
-  
+  SerialMonitorInterface.println("REPORT MAP SIZEEEEE");
+  SerialMonitorInterface.println(sizeof(REPORT_MAP));
   COPY_REPORT_MAP_UUID(uuid16);
-  //MOUSE REPORT MAP..20?
+  //REPORT MAP?
   ret =  aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(REPORT_MAP), CHAR_PROP_READ, ATTR_PERMISSION_NONE, GATT_DONT_NOTIFY_EVENTS,
                            16, CHAR_VALUE_LEN_VARIABLE, &HIDRPCharHandle);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
   
   ret = aci_gatt_update_char_value(HIDServHandle, HIDRPCharHandle, 0, sizeof(REPORT_MAP), REPORT_MAP);
   if (ret != BLE_STATUS_SUCCESS) goto fail;
+
+  SerialMonitorInterface.println("Report map success!.\n");
 
   COPY_BOOT_MOUSE_INPUT_REPORT_UUID(uuid16);
   //BOOT MOUSE INPUT REPORT
@@ -201,8 +206,26 @@ uint8_t init_HID_service() {
                               ATTR_PERMISSION_NONE, ATTR_ACCESS_READ_ONLY, GATT_NOTIFY_ATTRIBUTE_WRITE,
                               10, CHAR_VALUE_LEN_CONSTANT, &HIDMediaReportODescCharHandle);
 
-  SerialMonitorInterface.println("Added char desc.\n"); 
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
+/*
+  //KEYBOARD REPORT O
+  
+  COPY_REPORT_CHAR_UUID(uuid16);
+  ret = aci_gatt_add_char(HIDServHandle, UUID_TYPE_16, uuid16, sizeof(keyboard_report),
+                           (CHAR_PROP_READ | CHAR_PROP_NOTIFY), ATTR_PERMISSION_NONE, GATT_NOTIFY_ATTRIBUTE_WRITE,
+                           16, CHAR_VALUE_LEN_VARIABLE, &HIDKeyboardReportOCharHandle);
+  
+  if (ret != BLE_STATUS_SUCCESS) goto fail;
 
+  COPY_REPORT_REFERENCE_UUID(uuid16);
+
+  ret = aci_gatt_add_char_desc(HIDServHandle, HIDReportCharHandle, UUID_TYPE_16, uuid16,
+                              sizeof(report_o_reference_t), sizeof(report_o_reference_t), &keyboardReportODesc,
+                              ATTR_PERMISSION_NONE, ATTR_ACCESS_READ_ONLY, GATT_NOTIFY_ATTRIBUTE_WRITE,
+                              10, CHAR_VALUE_LEN_CONSTANT, &HIDKeyboardReportODescCharHandle);
+
+  SerialMonitorInterface.println("Added char desc.\n"); 
+*/
   if (ret != BLE_STATUS_SUCCESS) goto fail;
 
 

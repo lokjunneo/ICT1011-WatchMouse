@@ -50,7 +50,7 @@ void setup() {
 
   Wire.begin();
   SerialMonitorInterface.begin(9600); //baud rate or something
-  //while(!SerialMonitorInterface); //make sure we can print stuff in SMI, before we proceed
+  while(!SerialMonitorInterface); //make sure we can print stuff in SMI, before we proceed
 
   display.begin();
   BLE_Setup();

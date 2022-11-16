@@ -97,8 +97,8 @@ typedef const uint8_t custom_report_map_t[];
 typedef const uint8_t * report_t;
 
 uint8_t boot_mouse_report[] = { 0,0,0,0};
-uint8_t media_report[] = {0,0,0,0,0,0,0,0,
-                          0,0,0,0,0,0,0,0};
+uint8_t media_report[] = {0,0,0,0,0,0,0,0};
+uint8_t keyboard_report[] = {0,0};
 //uint8_t composite_report[] = {0,0,0,0,0,0,0,0,0,0,0,0};
 
 typedef struct {
@@ -119,7 +119,7 @@ enum ProtocolMode {
 
 typedef struct {
     uint8_t ID;
-    uint8_t type; //apparently, cannot have this
+    uint8_t type; 
 } mouse_report_reference_t;
 
 typedef struct {
@@ -164,50 +164,26 @@ custom_report_map_t REPORT_MAP = {
     REPORT_SIZE(1),     0x08,         //   Three bytes
     REPORT_COUNT(1),    0x03,
     INPUT(1),           0x06,         //   Data, Variable, Relative
-    //INPUT(1),           0x02,         //   Data, Variable, Relative
     END_COLLECTION(0),
     END_COLLECTION(0),
-/*
-    USAGE_PAGE(1),      0x0C,          // USAGE_PAGE (Consumer)
-    USAGE(1),           0x01,          // USAGE (Consumer Control)
-    COLLECTION(1),      0x01,          // COLLECTION (Application)
-    REPORT_ID(1),       0x02,          //   REPORT_ID 2, media keys id
-    USAGE_PAGE(1),      0x07,          //   USAGE_PAGE (Kbrd/Keypad)
-    USAGE_MINIMUM(1),   0x00,          //   USAGE_MINIMUM (0xE0)
-    USAGE_MAXIMUM(1),   0xE9,          //   USAGE_MAXIMUM (0xE7)
-    LOGICAL_MINIMUM(1), 0x00,          //   LOGICAL_MINIMUM (0)
-    LOGICAL_MAXIMUM(1), 0x01,          //   Logical Maximum (1)
-    REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
-    REPORT_COUNT(1),    0x08,          //   REPORT_COUNT (8)
-    USAGE(1),           0xB5,          //   USAGE (Scan Next Track)     ; bit 0: 1
-    USAGE(1),           0xB6,          //   USAGE (Scan Previous Track) ; bit 1: 2
-    USAGE(1),           0xB7,          //   USAGE (Stop)                ; bit 2: 4
-    USAGE(1),           0xCD,          //   USAGE (Play/Pause)          ; bit 3: 8
-    USAGE(1),           0xE2,          //   USAGE (Mute)                ; bit 4: 16
-    USAGE(1),           0xE9,          //   USAGE (Volume Increment)    ; bit 5: 32
-    USAGE(1),           0xEA,          //   USAGE (Volume Decrement)    ; bit 6: 64
-    USAGE(2),           0x23, 0x02,    //   Usage (WWW Home)            ; bit 7: 128
-    INPUT(1),           0x02,          //   INPUT (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    END_COLLECTION(0)                  // END_COLLECTION
-    */
+
     // ------------------------------------------------- Media Keys
     USAGE_PAGE(1),      0x0C,          // USAGE_PAGE (Consumer)
     USAGE(1),           0x01,          // USAGE (Consumer Control)
     COLLECTION(1),      0x01,          // COLLECTION (Application)
-    REPORT_ID(1),       0x02, //   REPORT_ID (3)
+    REPORT_ID(1),       0x02, 
     USAGE_PAGE(1),      0x0C,          //   USAGE_PAGE (Consumer)
     LOGICAL_MINIMUM(1), 0x00,          //   LOGICAL_MINIMUM (0)
     LOGICAL_MAXIMUM(1), 0x01,          //   LOGICAL_MAXIMUM (1)
     REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
-    REPORT_COUNT(1),    0x10,          //   REPORT_COUNT (16)
-    USAGE(1),           0xB5,          //   USAGE (Scan Next Track)     ; bit 0: 1
-    USAGE(1),           0xB6,          //   USAGE (Scan Previous Track) ; bit 1: 2
-    USAGE(1),           0xB7,          //   USAGE (Stop)                ; bit 2: 4
-    USAGE(1),           0xCD,          //   USAGE (Play/Pause)          ; bit 3: 8
-    USAGE(1),           0xE2,          //   USAGE (Mute)                ; bit 4: 16
+    REPORT_COUNT(1),    0x05,          //   REPORT_COUNT (5)
+    INPUT(1),           0x01,
+    REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
+    REPORT_COUNT(1),    0x03,          //   REPORT_COUNT (5)
     USAGE(1),           0xE9,          //   USAGE (Volume Increment)    ; bit 5: 32
     USAGE(1),           0xEA,          //   USAGE (Volume Decrement)    ; bit 6: 64
     USAGE(2),           0x23, 0x02,    //   Usage (WWW Home)            ; bit 7: 128
+    /*
     USAGE(2),           0x94, 0x01,    //   Usage (My Computer) ; bit 0: 1
     USAGE(2),           0x92, 0x01,    //   Usage (Calculator)  ; bit 1: 2
     USAGE(2),           0x2A, 0x02,    //   Usage (WWW fav)     ; bit 2: 4
@@ -215,10 +191,28 @@ custom_report_map_t REPORT_MAP = {
     USAGE(2),           0x26, 0x02,    //   Usage (WWW stop)    ; bit 4: 16
     USAGE(2),           0x24, 0x02,    //   Usage (WWW back)    ; bit 5: 32
     USAGE(2),           0x83, 0x01,    //   Usage (Media sel)   ; bit 6: 64
-    USAGE(2),           0x8A, 0x01,    //   Usage (Mail)        ; bit 7: 128
+    USAGE(2),           0x8A, 0x01,    //   Usage (Mail)        ; bit 7: 128*/
     INPUT(1),        0x02,          //   INPUT (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position)
-    END_COLLECTION(0)                  // END_COLLECTION
+    END_COLLECTION(0),                  // END_COLLECTION
+
+
     
+    USAGE_PAGE(1),      0x01,          // USAGE_PAGE (Generic Desktop Page)
+    USAGE(1),           0x06,          // USAGE (Keyboard)
+    COLLECTION(1),      0x01,          // COLLECTION (Application)
+    REPORT_ID(1),       0x03, //   REPORT_ID (3)
+    USAGE_PAGE(1),      0x07,          //   USAGE_PAGE (KEYBOARD)
+    LOGICAL_MINIMUM(1), 0x00,          //   LOGICAL_MINIMUM (0)
+    LOGICAL_MAXIMUM(1), 0x01,          //   LOGICAL_MAXIMUM (1)
+    REPORT_SIZE(1),     0x01,          //   REPORT_SIZE (1)
+    REPORT_COUNT(1),    0x02,          //   REPORT_COUNT (2)
+    USAGE(1),           0x4F,          
+    USAGE(1),           0x50,         
+    INPUT(1),           0x06,        //   INPUT (Data,Var,Relative)
+    REPORT_COUNT(1),    0x06,
+    REPORT_SIZE(1),     0x01, 
+    INPUT(1),           0x01,        //   INPUT Constant (For padding)
+    END_COLLECTION(0),                  // END_COLLECTION
 };
 
 typedef const uint8_t keyboard_report_map_t[];

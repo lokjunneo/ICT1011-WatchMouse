@@ -54,8 +54,7 @@ Used as reference to learn how to properly store UUID, as well as some BLE event
 4. https://github.com/PixlRainbow/TinyCircuits-TinyShield-BLE-ASD2116/tree/a4f926d72a8e6264ea06030a27de2e3c9c63afe9/examples/STBLE/examples/BLEKeyboard
 
 A public fork of (3), with a keyboard HID service/char setup code.
-Used as a reference to setup mouse services/characteristics.
-(4) most likely also references (2) as well
+Used as a reference to setup mouse and media services/characteristics.
 
 
 Library used: STBLE.h, ...
