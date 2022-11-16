@@ -41,19 +41,19 @@ void BLE_Loop(){
   BLE_Process();
   ble_menu_page_check();
   ble_rightBtn();
+  ble_leftBtn();
   ble_millis = millis();
   if (ble_millis < BLE_Timer){
     BLE_Timer = 0;
     ble_command_timer = 0;
   }
-  if (ble_connection_state && ble_curr_page_number){
+  if (ble_curr_page_number){
     ble_remote_page_check();
     bleCheckButton();
     if (ble_millis - BLE_Timer > ble_update_delay){
       bleUpdater();
     }
     else if (ble_millis - BLE_Timer < 0) {BLE_Timer = 0;} //millis overflows after roughly 50 days
-    ble_leftBtn();
   }
 }
 //To do: add left and right click
