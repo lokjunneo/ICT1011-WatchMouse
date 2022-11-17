@@ -258,7 +258,7 @@ void ble_quick_draw(int draw_x, int draw_y, char text[], const int text_size){
 */
 uint8_t ble_rightBtn(){
   if (display.getButtons(TSButtonLowerRight)){
-    if (ble_millis - ble_command_timer > 200){
+    if (ble_millis - ble_command_timer > 350){
       if (menu_page_number <= 1){
         if (menu_page_number){
           if (ble_connection_state){
@@ -285,7 +285,7 @@ uint8_t ble_rightBtn(){
 
 uint8_t ble_leftBtn(){
   if (display.getButtons(TSButtonLowerLeft)){
-    if (ble_millis - ble_command_timer > 200){
+    if (ble_millis - ble_command_timer > 350){
       if (menu_page_number < 1){
         if (ble_curr_page_number -1 > 0){
           ble_curr_page_number--;
