@@ -96,7 +96,7 @@ void accelerometer_mouse(){
       SerialMonitorInterface.print(y);
       SerialMonitorInterface.print(", z = ");  
       SerialMonitorInterface.println(z);*/
-      updateMouseXY(tempy,tempx);
+      updateMouseXY(tempy*-1,tempx*-1);
     }
     update_millis = millis();
   }

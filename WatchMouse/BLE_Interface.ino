@@ -306,14 +306,16 @@ uint8_t ble_leftBtn(){
 }
 
 
+
 uint8_t ble_menu_page_check(){
   if (menu_page_number == 1){
     if(!ble_drawn_menu_page){
       if (ble_connection_state){
-        ble_quick_draw(51,50,"Remote >", 8);
+        ble_quick_draw(90,50,">", 1);
       }
       else{
-        ble_quick_draw(51,50,"Remote x", 8);
+        ble_quick_draw(90,50,"x", 1);
+        
       }
     ble_drawn_menu_page = 1;
     }

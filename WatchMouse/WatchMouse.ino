@@ -54,9 +54,10 @@ void setup() {
   Wire.begin();
   SerialMonitorInterface.begin(9600); //baud rate or something
   //while(!SerialMonitorInterface); //make sure we can print stuff in SMI, before we proceed
-
   display.begin();
+  display.setFlip(1);
   BLE_Setup();
+  displayclock_setup();
   // Set up the BMA250 acccelerometer sensor
   accel_sensor.begin(BMA250_range_2g, BMA250_update_time_64ms); 
 }
@@ -64,6 +65,7 @@ void setup() {
 void loop() {
   
   BLE_Loop();
+  clock_update();
 
   //Accelerometer();
 }
