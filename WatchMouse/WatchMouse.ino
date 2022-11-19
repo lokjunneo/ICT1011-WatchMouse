@@ -3,6 +3,11 @@
 #include <Wire.h>
 #include <TinyScreen.h>
 #include <STBLE.h>
+
+#include <TimeLib.h> //include the Arduino Time library
+#include <RTCZero.h>
+#include <Time.h>
+
 #include "USBHID_Types.h"
 #include "UUID.h"
 #include "BMA250.h" 
@@ -44,6 +49,9 @@ uint8_t old_media_report[] = {0,0,0,0,0,0,0,0};
 
 uint8_t curr_keyboard_report[] = {0,0};
 uint8_t old_keyboard_report[] = {0,0};
+int toggleBtn=1;
+long stopwatch_time_when_last_button_was_pressed = 0;
+
 
 
 
@@ -60,11 +68,18 @@ void setup() {
   displayclock_setup();
   // Set up the BMA250 acccelerometer sensor
   accel_sensor.begin(BMA250_range_2g, BMA250_update_time_64ms); 
+  toggleBtn=1;
+  stopwatch_time_when_last_button_was_pressed = 0;
 }
 
 void loop() {
   
   BLE_Loop();
+  stopwatch_btmleftBtn();
+  stopwatch_toprightBtn();
+  stopwatch_topleftBtn();
+  stopwatch_toprightBtn_2();
+  stopwatch_draw_loop();
   clock_update();
 
   //Accelerometer();

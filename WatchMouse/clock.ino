@@ -16,10 +16,9 @@ int set_time_track = 0;
 
 
 
-#include <TinyScreen.h> //include TinyScreen library
-#include <TimeLib.h> //include the Arduino Time library
-#include <SPI.h> //include this library for communication with OLED screen
-#include <Wire.h>
+//#include <TinyScreen.h> //include TinyScreen library
+//#include <SPI.h> //include this library for communication with OLED screen
+//#include <Wire.h>
 
 //TinyScreen display = TinyScreen(TinyScreenDefault); //Create the TinyScreen object
 #if defined(ARDUINO_ARCH_SAMD)
