@@ -6,6 +6,9 @@ At the starting menu page, you should see either of the following at the bottom 
 "Remote x" - this means that you have not connected the watch to a bluetooth device yet
 "Remote >" - this means you can now access remote control functions.
 
+Go to the device you wish to connect to and select "Watchmouse" on the bluetooth devices list to connect to the watch. If Watchmouse does not show up devices list, you may have to try using the nRFConnect app to pair the devices. 
+(After pairing, there is no need to use the app again, unless you unpair the watch)
+
 To access remote control functions, press the lower right button. 
 In the remote control screen, you can switch between remote functions using the bottom left and right buttons.
 The top left and right buttons are used to send control inputs, such as increase or decrease volume, left or right click.
