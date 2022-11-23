@@ -1,4 +1,21 @@
 =====
+Clock settings:
+On the starting menu page,
+Pressing the bottom right button will bring you to the change time settings page. 
+In this page, the top left/btm left buttons increase/decrease the currently selected value.
+The top right button changes the currently selected value to the one on the right.
+(e.g. currently selected value changes from hour to minute)
+
+To save and return to starting menu page, press the bottom right button.
+
+=====
+Stopwatch:
+On the starting menu page, pressing the top right button will bring you to the stopwatch page.
+Pressing the top left button will start/pause/resume the stopwatch.
+Pressing the top right button while paused will reset the stopwatch.
+Pressing the bottom left button will return to the starting menu page.
+
+=====
 Bluetooth remote controls:
 
 At the starting menu page, you should see either of the following at the bottom right part of the screen:
