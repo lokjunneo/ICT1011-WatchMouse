@@ -1,4 +1,6 @@
-# ICT 1011 Project
+# ICT 1011 Project: Watchmouse
+
+Watchmouse is a watch with built in bluetooth volume control, mouse control. It also has left/right keyboard button control which is used to simulate a powerpoint clicker.
 
 ## Libraries 
 
