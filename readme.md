@@ -1,6 +1,6 @@
 # ICT 1011 Project: Watchmouse
 
-Watchmouse is a watch with built in bluetooth functionalities such as: 
+Watchmouse is a project made using TinyCircuits. It is a watch with built in bluetooth functionalities such as: 
  - volume control 
  - mouse control.
  - left/right keyboard button control (which is used to simulate a powerpoint clicker.)
